@@ -1,5 +1,5 @@
 .header {
-    position: fixed;
+    position: sticky;
     display: flex;
     justify-content: space-evenly;
     border-bottom: 0.1px solid rgb(26, 26, 27);
