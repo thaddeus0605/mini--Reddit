@@ -4,7 +4,10 @@ import './SideBar.css'
 function SideBar() {
   return (
     <div className='sidebar__container'>
-        <p>This is the sidebar</p>
+        <h2>Subreddits</h2>
+        <ul className='sidebar__list'>
+          <li>News</li>
+        </ul>
     </div>
   )
 }

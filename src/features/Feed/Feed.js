@@ -1,28 +1,67 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Post from './Post/Post'
 import './Feed.css';
+import { useSelector } from 'react-redux';
+import { fetchPosts, selectFilteredPosts, setSearchTerm } from '../../store/redditSlice';
+import { useDispatch } from 'react-redux';
+
 
 function Feed() {
-  return (
+
+  const reddit = useSelector((state) => state.reddit);
+  const { isLoading, error, searchTerm, selectedSubreddit } = reddit;
+  const posts = useSelector(selectFilteredPosts);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchPosts(selectedSubreddit));
+  }, [selectedSubreddit]);
+
+  if (isLoading) {
+    return (
+      <div>
+        <h1>We're loading :)</h1>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div>
+        <h2>Failed to load posts</h2>
+        <button type='button' onClick={() => dispatch(fetchPosts(selectedSubreddit))}>
+          Try Again!
+        </button>
+      </div>
+    )
+  }
+
+  if (posts.length === 0) {
+    return ( 
+      <div>
+        <h2>Failed to find posts with seach "{searchTerm}"</h2>
+        <button type='button' onClick={() => dispatch(setSearchTerm(''))}>
+          Go Back 
+          </button>
+      </div>
+    )
+  }
+
+  return ( 
+    
     <div className='feed__container'>
+          
+      {posts.map((post) => (
         <Post 
-            title="Tom Henderson: Star Wars Eclipse update later this week"
-            votes="355"
-            image = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRehIidIV30u-xcBAz9FrulI7WNNDYmt1_Mrg&usqp=CAU"
-            author="user4269"
-            time="13 hours ago"
-            commentsNum="400"
+          key={post.id}
+          post={post}
         />
-         <Post 
-            title="Tom Henderson: Star Wars Eclipse update later this week"
-            votes="355"
-            image = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRehIidIV30u-xcBAz9FrulI7WNNDYmt1_Mrg&usqp=CAU"
-            author="user42069"
-            time="13 hours ago"
-            commentsNum="400"
-        />
+      ))}
+     
     </div>
   )
+
+ 
 }
 
 export default Feed
